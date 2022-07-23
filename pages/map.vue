@@ -23,33 +23,6 @@ index.browseObjects({
 }).then(() => console.log(records));
 
 
-const turbines = [
-    {
-        "TurbineName": "Unit 1",
-        "InstallationID": 100,
-        "PriceArea": "DK1",
-        "Latitude": 56.2000000000,
-        "Longitude": 8.6000000000,
-        "Value": 10.0
-    },
-    {
-        "TurbineName": "Unit 2",
-        "InstallationID": 101,
-        "PriceArea": "DK1",
-        "Latitude": 56.3000000000,
-        "Longitude": 8.6000000000,
-        "Value": -20.0
-    },
-    {
-        "TurbineName": "Unit 3",
-        "InstallationID": 102,
-        "PriceArea": "DK1",
-        "Latitude": 10.676524188468528,
-        "Longitude": 55.88490923940639,
-        "Value": -30.0
-    }]
-
-
 export default {
     head: {
       link: [
@@ -77,23 +50,28 @@ export default {
                 zoom: 11,
                 center: [10.676524188468528, 55.88490923940639]
             })
-            for (const turbine of turbines) {
+            index.browseObjects({
+            batch: batch => {
+                records = records.concat(batch);
+            },
+            query: '',
+            }).then(() => { for (const record of records) {
                 // create a HTML element for each turbine
                 const el = document.createElement('div');
                 el.className = 'marker';
 
                 // make a marker for each turbine and add to the map
                 new mapboxgl.Marker(el)
-                    .setLngLat([turbine.Longitude, turbine.Latitude])
+                    .setLngLat([record["location.lng"], record["location.lat"]])
                     .setPopup(
                         new mapboxgl.Popup({ offset: 25 }) // add popups
                             .setHTML(
-                                `<h3 class=""text-blue-500>${turbine.TurbineName}</h3><p>${turbine.InstallationID}</p>`
+                                `<h3 class=""text-blue-500>${record.fullName}</h3><p>${record.id}</p>`
                             )
                     )
                     .addTo(this.map);
-                console.log([turbine.Longitude, turbine.Latitude])
-            }
+                console.log([record.fullName, record.fullName])
+        }})
         }
     }
 }
