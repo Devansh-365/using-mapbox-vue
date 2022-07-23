@@ -5,6 +5,23 @@
 <script>
 
 import mapboxgl from 'mapbox-gl'
+import algoliasearch from 'algoliasearch';
+
+
+const client = algoliasearch('8JO6B8QMWY', '969addb6985ef227919a7d9e96f47cd3');
+const index = client.initIndex('user_data');
+
+// Database of users
+let records = []
+
+// fetch all data from api
+index.browseObjects({
+  batch: batch => {
+    records = records.concat(batch);
+  },
+  query: '',
+}).then(() => console.log(records));
+
 
 const turbines = [
     {
